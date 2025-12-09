@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Meet Singles Near You — Quick & Safe</title>
+<meta name="description" content="Create your profile and start meeting local singles. Fast signup, verified members." />
+<style>
+  :root{
+    --accent:#ff3b6b;
+    --bg:#f4f7fb;
+    --card:#ffffff;
+    --muted:#6b6f76;
+    --shadow: 0 8px 28px rgba(18,24,33,0.08);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,Arial,sans-serif;
+    background:var(--bg);
+    color:#0b1220;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:24px;
+  }
+  .frame{width:100%;max-width:420px}
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:28px;
+    box-shadow:var(--shadow);
+    text-align:center;
+    transition:transform .35s ease,box-shadow .35s ease;
+  }
+  .card:hover{transform:translateY(-4px)}
+  h1{margin:6px 0 10px;font-size:20px}
+  p.lead{margin:0 0 18px;color:var(--muted);font-size:15px}
+  .badge{display:inline-block;background:linear-gradient(90deg,var(--accent),#ff6b93);color:#fff;padding:6px 10px;border-radius:999px;font-size:12px;margin-bottom:12px}
+  .btn{
+    display:inline-block;
+    width:100%;
+    border:0;
+    border-radius:12px;
+    background:var(--accent);
+    color:#fff;
+    padding:14px 16px;
+    font-size:16px;
+    cursor:pointer;
+    box-shadow:0 8px 18px rgba(255,59,107,0.18);
+    transition:transform .15s ease,opacity .15s ease;
+  }
+  .btn:active{transform:scale(.996)}
+  .muted{color:var(--muted);font-size:13px;margin-top:12px}
+  .hidden{display:none}
+  .progress-wrap{height:8px;background:#e9eef6;border-radius:8px;overflow:hidden;margin-bottom:18px}
+  .progress{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),#ff6b93);transition:width .45s cubic-bezier(.2,.9,.3,1)}
+  /* small footer / trust */
+  .trust{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:16px}
+  .dot{width:8px;height:8px;border-radius:999px;background:#dfe6ee}
+  /* responsive */
+  @media (max-width:420px){ .card{padding:20px} h1{font-size:18px} .btn{padding:12px;font-size:15px}}
+</style>
+</head>
+<body>
+<div class="frame">
+
+  <!-- Step 1 -->
+  <div id="card1" class="card" aria-hidden="false">
+    <div class="badge">Step 1 of 2</div>
+    <h1>Are you 18 or older?</h1>
+    <p class="lead">You must be 18+ to use the service. This only takes a second.</p>
+
+    <div class="progress-wrap" aria-hidden="true">
+      <div id="progress1" class="progress" style="width:33%"></div>
+    </div>
+
+    <button id="btnContinue" class="btn" type="button" aria-label="Confirm age">Yes, I am 18+</button>
+
+    <p class="muted">We protect user privacy and verify accounts.</p>
+  </div>
+
+  <!-- Step 2 -->
+  <div id="card2" class="card hidden" aria-hidden="true">
+    <div class="badge">Step 2 of 2</div>
+    <h1>Meet Singles Near You ❤️</h1>
+    <p class="lead">Create a quick profile and get matched with verified local members.</p>
+
+    <div class="progress-wrap" aria-hidden="true">
+      <div id="progress2" class="progress" style="width:66%"></div>
+    </div>
+
+    <button id="btnGo" class="btn" type="button" aria-label="Go to dating site">Continue to Site</button>
+
+    <p class="muted">Takes ~2 minutes • Verified emails • Real local users</p>
+
+    <div class="trust" aria-hidden="true">
+      <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ---------- SETTINGS ---------- */
+/* Ganti ini dengan smartlink Trafee-mu */
+const SMARTLINK = "https://deegiej.panch.one/p/6U1yw";
+
+/* Basic client-side bot filter (lightweight).
+   NOTE: This is NOT a fraud-evasion tool; it's only to reduce obvious headless bots.
+   Do not use to bypass network policies. */
+function lightweightBotCheck(){
+  const ua = navigator.userAgent || "";
+  const lowConfidenceBots = [
+    "HeadlessChrome","PhantomJS","Puppeteer","Playwright","curl/",
+    "wget","bot","spider","crawler","libwww-perl","python-requests",
+    "Java/","Go-http-client"
+  ];
+  for(let p of lowConfidenceBots){
+    if(ua.indexOf(p) !== -1) return true;
+  }
+  /* also basic heuristics: no plugins + strange languages */
+  if(navigator.plugins && navigator.plugins.length === 0 && navigator.language === undefined) return true;
+  return false;
+}
+
+/* ---------- UI & FLOW ---------- */
+const card1 = document.getElementById("card1");
+const card2 = document.getElementById("card2");
+const btnContinue = document.getElementById("btnContinue");
+const btnGo = document.getElementById("btnGo");
+const progress1 = document.getElementById("progress1");
+const progress2 = document.getElementById("progress2");
+
+let isBot = lightweightBotCheck();
+/* If obviously bot-like, show simplified message (do not redirect) */
+if(isBot){
+  document.body.innerHTML = '<div style="font-family:Inter,Arial;text-align:center;padding:40px;"><h2 style="color:#222">Checking...</h2><p style="color:#666">Please wait while we validate your connection.</p></div>';
+}
+
+/* Transition functions */
+function toStep2(){
+  progress1.style.width = "100%";
+  setTimeout(()=>{
+    card1.classList.add("hidden");
+    card1.setAttribute("aria-hidden","true");
+    card2.classList.remove("hidden");
+    card2.setAttribute("aria-hidden","false");
+    progress2.style.width = "100%";
+  },260);
+}
+
+/* Button events */
+btnContinue.addEventListener("click", function(){
+  if(isBot) return; // do nothing
+  toStep2();
+});
+
+btnGo.addEventListener("click", function(){
+  if(isBot) return;
+  // Small delay for UX before redirect
+  btnGo.innerText = "Redirecting…";
+  setTimeout(()=>{ window.location.href = SMARTLINK; }, 450);
+});
+
+/* Accessibility: Enter key triggers */
+window.addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    if(!card1.classList.contains("hidden")) btnContinue.click();
+    else if(!card2.classList.contains("hidden")) btnGo.click();
+  }
+});
+</script>
+</body>
+</html>
